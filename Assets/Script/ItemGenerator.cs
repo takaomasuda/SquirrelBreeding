@@ -7,7 +7,7 @@ public class ItemGenerator : MonoBehaviour
     public GameObject seedPrefab;
     public GameObject goldSeedPrefab;
     float delta = 0;
-    float span = 2.0f;
+    float initialSeedDropSpan = 2.0f;
 
     GameObject director;
 
@@ -20,16 +20,23 @@ public class ItemGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int dropRate = this.director.GetComponent<GameDirector>().getDropRate();
+        int dropSpeed = this.director.GetComponent<GameDirector>().getDropSpeed();
         int seedQuality = this.director.GetComponent<GameDirector>().getSeedQuality();
 
         this.delta += Time.deltaTime;
-        if (delta > this.span - (dropRate * 0.2f))
+
+        float seedDropSpan = initialSeedDropSpan - (dropSpeed * 0.2f);
+        if (dropSpeed >= 10)
+        {
+            seedDropSpan = 0.15f;
+        }
+
+        if (delta > seedDropSpan)
         {
             this.delta = 0;
             GameObject seed;
 
-            int quality = Random.Range(0, 9);
+            int quality = Random.Range(0, 10);
             if (quality < seedQuality)
             {
                 seed = Instantiate(goldSeedPrefab) as GameObject;
